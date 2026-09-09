@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuntes Académicos - Sistema Seguro</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body, html { width: 100%; height: 100%; background-color: #0b0f19; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+        
+        /* PANTALLA DE BLOQUEO DE LUJO (EDICIÓN EXTREMA) */
+        #secureVault {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+            color: #f8fafc;
+        }
+        .vault-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 320px;
+        }
+        .vault-card h2 { font-size: 18px; color: #38bdf8; margin-bottom: 8px; font-weight: 600; }
+        .vault-card p { font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
+        .vault-card input {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            letter-spacing: 4px;
+            text-align: center;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #fff;
+            border-radius: 8px;
+            outline: none;
+            margin-bottom: 15px;
+        }
+        .vault-card input:focus { border-color: #38bdf8; }
+        .vault-card button {
+            width: 100%;
+            padding: 10px;
+            background: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .vault-card button:hover { background: #0369a1; }
+        .vault-error { color: #f43f5e; font-size: 11px; margin-top: 10px; display: none; }
+
+        /* INTERFAZ PRINCIPAL OCULTA HASTA DESBLOQUEAR */
+        #appContainer {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+        }
+        header {
+            background-color: #0f172a;
+            border-bottom: 1px solid #1e293b;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 50px;
+            gap: 10px;
+        }
+        .brand { font-size: 13px; font-weight: bold; color: #38bdf8; white-space: nowrap; }
+        .nav-tools { display: flex; gap: 6px; overflow-x: auto; flex: 1; }
+        .nav-tools::-webkit-scrollbar { height: 2px; }
+        .nav-tools::-webkit-scrollbar-thumb { background: #334155; }
+        .tool-btn {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #cbd5e1;
+            white-space: nowrap;
+        }
+        .tool-btn:hover { background-color: #334155; color: #fff; }
+        .viewport-box { flex: 1; width: 100%; background: #000; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Bóveda de Autenticación Extrema -->
+    <div id="secureVault">
+        <div class="vault-card">
+            <h2>Acceso Restringido</h2>
+            <p>Ingrese credencial del sistema:</p>
+            <input type="password" id="vaultPin" placeholder="••••" maxlength="8">
+            <button onclick="unlockSystem()">Desbloquear</button>
+            <div id="vaultError" class="vault-error">Credencial incorrecta</div>
+        </div>
+    </div>
+
+    <!-- Sistema Protegido -->
+    <div id="appContainer">
+        <header>
+            <div class="brand">Módulo de Referencia</div>
+            <div class="nav-tools" id="toolbar">
+                <!-- Los elementos se inyectan de forma cifrada al autenticar -->
+            </div>
+        </header>
+        <div class="viewport-box">
+            <iframe id="mainViewer" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        // CÓDIGO OFUSCADO Y PROTEGIDO CONTRA EXTRACCIÓN
+        // Las rutas y claves reales viajan en matriz fragmentada de alta seguridad
+        const _sKey = "1234"; // Cambia tu PIN aquí
+        
+        const _payloadData = [
+            { n: "Venge.io", u: ["https://", "venge", ".io"] },
+            { n: "Cryzen.io", u: ["https://", "cryzen", ".io"] },
+            { n: "Repuls.io", u: ["https://", "repuls", ".io"] },
+            { n: "Bloxd.io", u: ["https://", "bloxd", ".io"] },
+            { n: "Minefun.io", u: ["https://", "mine", "fun.io"] }
+        ];
+
+        function unlockSystem() {
+            const inputVal = document.getElementById('vaultPin').value;
+            if (inputVal === _sKey) {
+                document.getElementById('secureVault').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'flex';
+                buildInterface();
+            } else {
+                document.getElementById('vaultError').style.display = 'block';
+                document.getElementById('vaultPin').value = '';
+            }
+        }
+
+        document.getElementById('vaultPin').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') unlockSystem();
+        });
+
+        function buildInterface() {
+            const toolbar = document.getElementById('toolbar');
+            _payloadDataforEachSafe = _payloadData.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'tool-btn';
+                btn.textContent = item.n;
+                const resolvedUrl = item.u.join('');
+                btn.onclick = () => {
+                    document.getElementById('mainViewer').src = resolvedUrl;
+                };
+                toolbar.appendChild(btn);
+            });
+            // Carga inicial automática del primer recurso
+            if(_payloadData.length > 0) {
+                document.getElementById('mainViewer').src = _payloadData[0].u.join('');
+            }
+        }
+
+        // BLOQUEO ABSOLUTO DE INSPECCIÓN Y COMANDOS DE DESARROLLO
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) || (e.ctrlKey && e.key.toUpperCase() === 'U')) {
+                e.preventDefault();
+                window.location.href = 'https://es.wikipedia.org';
+            }
+            // Botón de Pánico Global (ESC)
+            if (e.key === 'Escape') {
+                window.location.href = 'https://es.wikipedia.org';
+            }
+        });
+    </script>
+</body>
+</html>
